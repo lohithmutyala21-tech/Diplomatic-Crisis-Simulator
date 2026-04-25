@@ -1,0 +1,14 @@
+{
+  "trained_agent": {
+    "reward": 2.86,
+    "trust": 0.51
+  },
+  "heuristic_agent": {
+    "reward": 1.92,
+    "trust": 0.22
+  },
+  "random_agent": {
+    "reward": 0.85,
+    "trust": 0.10
+  }
+}

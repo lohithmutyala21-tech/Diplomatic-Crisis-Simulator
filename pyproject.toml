@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "diplomatic-crisis-env"
+version = "0.1.0"
+description = "Theory-of-mind training environment for LLMs"
+dependencies = [
+  "openenv-core",
+  "fastapi",
+  "uvicorn",
+  "pydantic>=2.0",
+  "rapidfuzz",
+]
+
+[project.optional-dependencies]
+train = ["unsloth", "trl", "transformers", "accelerate", "wandb"]
+dev = ["pytest"]

@@ -1,0 +1,14 @@
+name: diplomatic_crisis_env
+version: "0.1.0"
+description: "The first OpenEnv environment that explicitly rewards theory-of-mind via measurable intent prediction. Multi-agent negotiation with trust, betrayal, and coalition dynamics."
+spec_version: 1
+client:
+  class_name: DiplomaticCrisisEnv
+  module: diplomatic_crisis_env.client
+action:
+  class_name: DiplomaticAction
+  module: diplomatic_crisis_env.models
+observation:
+  class_name: DiplomaticObservation
+  module: diplomatic_crisis_env.models
+default_image: diplomatic-crisis-env:latest

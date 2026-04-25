@@ -1,0 +1,6 @@
+from fastapi import FastAPI
+from openenv.core import create_fastapi_app
+from diplomatic_crisis_env.models import DiplomaticAction, DiplomaticObservation
+from diplomatic_crisis_env.server.environment import DiplomaticCrisisEnvironment
+
+app = create_fastapi_app(DiplomaticCrisisEnvironment, DiplomaticAction, DiplomaticObservation)
