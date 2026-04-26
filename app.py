@@ -96,4 +96,4 @@ with gr.Blocks() as demo:
     view_btn.click(fn=show_results, inputs=[], outputs=[img1, img2])
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860)
+    demo.launch(server_name="0.0.0.0", server_port=7860, theme=gr.themes.Soft())
