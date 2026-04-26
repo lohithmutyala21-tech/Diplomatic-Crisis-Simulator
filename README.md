@@ -1,4 +1,15 @@
+---
+title: Diplomatic Crisis Simulator
+emoji: 🌍
+colorFrom: blue
+colorTo: red
+sdk: docker
+pinned: false
+---
+
 # 🧠 Diplomatic Crisis Simulator
+**[👉 Play with the Environment on Hugging Face Spaces!](https://huggingface.co/spaces/lohith-2108/deplomatic-env)**
+
 ### We train agents to model trust and intent under uncertainty.
 
 **LLMs fail at trust, betrayal, and long-term diplomacy.**  
@@ -25,14 +36,15 @@ python demo.py
 
 ---
 
-## 🌍 Why This Matters
+## 🌍 Why This Matters (Theme #1: Multi-Agent Interactions)
 
-Most LLM environments optimize for short-term rewards.
+This project strictly targets **Hackathon Theme #1 (Multi-Agent Interactions)**. 
+Most LLM environments optimize for short-term rewards in isolated settings. This environment forces the LLM to navigate **cooperation, competition, negotiation, and coalition formation**. 
 
-This environment introduces:
-* hidden intentions
-* delayed consequences
-* trust dynamics
+To survive, the agent must:
+* Model the hidden beliefs and incentives of other nations
+* Make decisions under partial observability
+* Experience trust dynamics and betrayal
 
 👉 enabling agents to learn **theory-of-mind reasoning**, a critical step toward safe multi-agent AI systems.
 
