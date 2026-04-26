@@ -38,36 +38,46 @@ def run_simulation():
             
             new_actions = next_obs.recent_public_actions
             if len(new_actions) > 0:
+                # Get the actions that happened during this step
+                # Since recent_public_actions grows, we just take the last action
+                # Or better, we can iterate over any actions that were added
                 last_act = new_actions[-1]
-                if f"{curr_nation} executed" not in last_act:
-                    log_line = ""
-                    if "accepted an alliance" in last_act:
-                        log_line = f"🤝 **Alliance:** {last_act}\n"
-                    elif "proposed an alliance" in last_act:
-                        log_line = f"✉️ **Proposal:** {last_act}\n"
-                    elif "sanctioned" in last_act:
-                        log_line = f"⚖️ **Action:** {last_act}\n"
-                    elif "BETRAYAL REVEALED" in last_act:
-                        log_line = f"🚨 **Betrayal:** {last_act}\n"
-                    elif "secretly plotted" in last_act:
-                        pass
-                    else:
-                        log_line = f"• {last_act}\n"
-                    
-                    if 0 < current_round <= max_demo_rounds:
-                        round_logs[current_round - 1] += log_line
+                
+                log_line = ""
+                if "accepted an alliance" in last_act:
+                    log_line = f"🤝 **Alliance:** {last_act}\n"
+                elif "proposed an alliance" in last_act:
+                    log_line = f"✉️ **Proposal:** {last_act}\n"
+                elif "sanctioned" in last_act:
+                    log_line = f"⚖️ **Action:** {last_act}\n"
+                elif "BETRAYAL REVEALED" in last_act:
+                    log_line = f"🚨 **Betrayal:** {last_act}\n"
+                elif "secretly plotted" in last_act:
+                    pass
+                else:
+                    log_line = f"• {last_act}\n"
+                
+                if 0 < current_round <= max_demo_rounds:
+                    round_logs[current_round - 1] += log_line
             
             obs = next_obs
 
         proof_snapshot = "---\n### 📊 LEARNING PROOF SNAPSHOT\n- **Reward Improvement:** 1.92 → 2.86\n- **Trust Calibration:** 0.22 → 0.51\n- **Alliances Formed:** +45% Stability\n"
         
-        # If any round is empty, show a fallback message
-        round_logs = [log if log.strip() else "No public actions recorded this round." for log in round_logs]
-        
-        return round_logs[0], round_logs[1], round_logs[2], round_logs[3], round_logs[4], proof_snapshot
+        # Prepare updates for the Accordions and Markdowns
+        updates = []
+        for log in round_logs:
+            has_content = bool(log.strip())
+            final_log = log if has_content else "No public actions recorded this round."
+            # Accordion update (open if there's content), Markdown update
+            updates.append(gr.Accordion(open=has_content))
+            updates.append(final_log)
+            
+        updates.append(proof_snapshot)
+        return tuple(updates)
     except Exception as e:
         err_msg = "⚠️ Simulation failed — please retry"
-        return err_msg, err_msg, err_msg, err_msg, err_msg, err_msg
+        return tuple([gr.Accordion(open=False), err_msg] * 5 + [err_msg])
 
 def show_results():
     if os.path.exists("reward_curve.png") and os.path.exists("trust_calibration_curve.png"):
@@ -88,11 +98,11 @@ with gr.Blocks() as demo:
         with gr.Column():
             run_btn = gr.Button("Run Simulation", variant="primary")
             
-            round_outputs = []
+            ui_components = []
             for i in range(1, 6):
-                with gr.Accordion(f"Round {i}", open=False):
+                with gr.Accordion(f"Round {i}", open=False) as acc:
                     md = gr.Markdown(f"Click 'Run Simulation' to observe Round {i} negotiations...")
-                    round_outputs.append(md)
+                    ui_components.extend([acc, md])
             
             proof_output = gr.Markdown("")
         
@@ -102,7 +112,7 @@ with gr.Blocks() as demo:
                 img1 = gr.Image(label="Trained agent consistently outperforms baseline")
                 img2 = gr.Image(label="Trust calibration improves over time")
 
-    run_btn.click(fn=run_simulation, inputs=[], outputs=round_outputs + [proof_output])
+    run_btn.click(fn=run_simulation, inputs=[], outputs=ui_components + [proof_output])
     view_btn.click(fn=show_results, inputs=[], outputs=[img1, img2])
 
 if __name__ == "__main__":
