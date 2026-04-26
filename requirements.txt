@@ -1,0 +1,9 @@
+openenv-core
+rapidfuzz
+numpy
+matplotlib
+gymnasium
+torch
+stable-baselines3
+gradio
+tqdm
