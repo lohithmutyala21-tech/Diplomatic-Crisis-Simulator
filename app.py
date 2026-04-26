@@ -71,7 +71,7 @@ def show_results():
         return ["reward_curve.png", "trust_calibration_curve.png"]
     return [None, None]
 
-with gr.Blocks(theme=gr.themes.Soft()) as demo:
+with gr.Blocks() as demo:
     gr.Markdown("# 🧠 Diplomatic Crisis Simulator — Live Demo")
     gr.Markdown("### Simulate alliances, betrayal, and trust dynamics between AI agents.")
     
@@ -89,8 +89,8 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
         with gr.Column():
             view_btn = gr.Button("View Training Results")
             with gr.Group():
-                img1 = gr.Image(label="Trained agent consistently outperforms baseline", show_download_button=False)
-                img2 = gr.Image(label="Trust calibration improves over time", show_download_button=False)
+                img1 = gr.Image(label="Trained agent consistently outperforms baseline")
+                img2 = gr.Image(label="Trust calibration improves over time")
 
     run_btn.click(fn=run_simulation, inputs=[], outputs=[sim_output])
     view_btn.click(fn=show_results, inputs=[], outputs=[img1, img2])
