@@ -20,7 +20,7 @@ def run_simulation():
             "Veldran": HeuristicAgent()
         }
         
-        output_log = f"**Simulation Seed:** {demo_seed}\n\n"
+        round_logs = [""] * 5
         
         done = False
         max_demo_rounds = 5
@@ -31,7 +31,6 @@ def run_simulation():
                 current_round = obs.round_number
                 if current_round > max_demo_rounds:
                     break
-                output_log += f"### 🔹 Round {current_round}\n"
             
             curr_nation = obs.nation_name
             act_obj = agents[curr_nation].act(obs)
@@ -41,30 +40,34 @@ def run_simulation():
             if len(new_actions) > 0:
                 last_act = new_actions[-1]
                 if f"{curr_nation} executed" not in last_act:
+                    log_line = ""
                     if "accepted an alliance" in last_act:
-                        output_log += f"🤝 **Alliance:** {last_act}\n"
+                        log_line = f"🤝 **Alliance:** {last_act}\n"
                     elif "proposed an alliance" in last_act:
-                        output_log += f"✉️ **Proposal:** {last_act}\n"
+                        log_line = f"✉️ **Proposal:** {last_act}\n"
                     elif "sanctioned" in last_act:
-                        output_log += f"⚖️ **Action:** {last_act}\n"
+                        log_line = f"⚖️ **Action:** {last_act}\n"
                     elif "BETRAYAL REVEALED" in last_act:
-                        output_log += f"🚨 **Betrayal:** {last_act}\n"
+                        log_line = f"🚨 **Betrayal:** {last_act}\n"
                     elif "secretly plotted" in last_act:
                         pass
                     else:
-                        output_log += f"• {last_act}\n"
+                        log_line = f"• {last_act}\n"
+                    
+                    if 0 < current_round <= max_demo_rounds:
+                        round_logs[current_round - 1] += log_line
             
             obs = next_obs
 
-        output_log += "\n---\n"
-        output_log += "### 📊 LEARNING PROOF SNAPSHOT\n"
-        output_log += "- **Reward Improvement:** 1.92 → 2.86\n"
-        output_log += "- **Trust Calibration:** 0.22 → 0.51\n"
-        output_log += "- **Alliances Formed:** +45% Stability\n"
+        proof_snapshot = "---\n### 📊 LEARNING PROOF SNAPSHOT\n- **Reward Improvement:** 1.92 → 2.86\n- **Trust Calibration:** 0.22 → 0.51\n- **Alliances Formed:** +45% Stability\n"
         
-        return output_log
+        # If any round is empty, show a fallback message
+        round_logs = [log if log.strip() else "No public actions recorded this round." for log in round_logs]
+        
+        return round_logs[0], round_logs[1], round_logs[2], round_logs[3], round_logs[4], proof_snapshot
     except Exception as e:
-        return "⚠️ Simulation failed — please retry"
+        err_msg = "⚠️ Simulation failed — please retry"
+        return err_msg, err_msg, err_msg, err_msg, err_msg, err_msg
 
 def show_results():
     if os.path.exists("reward_curve.png") and os.path.exists("trust_calibration_curve.png"):
@@ -84,7 +87,14 @@ with gr.Blocks() as demo:
     with gr.Row():
         with gr.Column():
             run_btn = gr.Button("Run Simulation", variant="primary")
-            sim_output = gr.Markdown("Click 'Run Simulation' to observe agents negotiating and building trust...")
+            
+            round_outputs = []
+            for i in range(1, 6):
+                with gr.Accordion(f"Round {i}", open=False):
+                    md = gr.Markdown(f"Click 'Run Simulation' to observe Round {i} negotiations...")
+                    round_outputs.append(md)
+            
+            proof_output = gr.Markdown("")
         
         with gr.Column():
             view_btn = gr.Button("View Training Results")
@@ -92,7 +102,7 @@ with gr.Blocks() as demo:
                 img1 = gr.Image(label="Trained agent consistently outperforms baseline")
                 img2 = gr.Image(label="Trust calibration improves over time")
 
-    run_btn.click(fn=run_simulation, inputs=[], outputs=[sim_output])
+    run_btn.click(fn=run_simulation, inputs=[], outputs=round_outputs + [proof_output])
     view_btn.click(fn=show_results, inputs=[], outputs=[img1, img2])
 
 if __name__ == "__main__":
