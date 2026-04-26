@@ -13,6 +13,7 @@ app_file: app.py
 **[👉 Open Hugging Face Space (Live Demo)](https://huggingface.co/spaces/lohith-2108/deplomatic-env)**
 **[📒 View Colab Training Notebook](https://colab.research.google.com/drive/1zfvv1OhOC4pzTMPx3cPnfmdbDQPM1vng?usp=sharing)**
 **[🎥 View Project Blog](Blog.md)**
+**[🎥 View Demo Video (YouTube)](https://youtu.be/Ib_K_Om0_EQ)**
 
 ---
 
